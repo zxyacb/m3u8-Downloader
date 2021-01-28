@@ -1,0 +1,1 @@
+ffmpeg -i final.ts -acodec copy -vcodec copy -f mp4 final.mp4
