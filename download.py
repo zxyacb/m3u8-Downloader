@@ -4,9 +4,7 @@ import m3u8
 import requests
 from Crypto.Cipher import AES
 
-
-m3u8_url = ''
-
+m3u8_url = 'https://g68v92.cdnlab.live/hls/iMGVARkgxdeRwFLKg3s7Iw/1612469855/11000/11603/11603.m3u8'
 
 def download(txt, segment, fileName):
     r = requests.get(segment.absolute_uri, headers=headers)
@@ -37,20 +35,22 @@ for key in playlist.keys:
         keys[key.absolute_uri] = key_content
 semathore = threading.Semaphore(8)
 total = len(playlist.segments)
-for inx, segment in playlist.segments:
+inx = 0
+for segment in playlist.segments:
     fileName = folder + os.path.basename(segment.absolute_uri)
     filelist.append(fileName)
     if (os.path.exists(fileName)):
         continue
     semathore.acquire()
     threading.Thread(target=download,
-                     args={'txt': '%s/%s' % (inx, total), 'segment': segment, 'fileName': fileName}).start()
+                     args=('%s/%s' % (inx + 1, total), segment, fileName)).start()
+    inx += 1
 
 for i in range(8):
     semathore.acquire()
 final_file = open('final.ts', "wb")
 for i in filelist:
-    x = open(i, "rb")  # ´ò¿ªÁĞ±íÖĞµÄÎÄ¼ş,¶ÁÈ¡ÎÄ¼şÄÚÈİ
-    final_file.write(x.read())  # Ğ´ÈëĞÂ½¨µÄlogÎÄ¼şÖĞ
-    x.close()  # ¹Ø±ÕÁĞ±íÎÄ¼ş
+    x = open(i, "rb")  # æ‰“å¼€åˆ—è¡¨ä¸­çš„æ–‡ä»¶,è¯»å–æ–‡ä»¶å†…å®¹
+    final_file.write(x.read())  # å†™å…¥æ–°å»ºçš„logæ–‡ä»¶ä¸­
+    x.close()  # å…³é—­åˆ—è¡¨æ–‡ä»¶
 final_file.close()
