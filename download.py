@@ -4,10 +4,13 @@ import m3u8
 import requests
 from Crypto.Cipher import AES
 
-m3u8_url = 'https://g68v92.cdnlab.live/hls/iMGVARkgxdeRwFLKg3s7Iw/1612469855/11000/11603/11603.m3u8'
+pxy = {
+    "http": "127.0.0.1:8087"
+}
+m3u8_url = 'https://gma9ia.cdnlab.live/hls/3251L0PzYCG4lwdSR5fr9g/1613861742/12000/12222/12222.m3u8'
 
 def download(txt, segment, fileName):
-    r = requests.get(segment.absolute_uri, headers=headers)
+    r = requests.get(segment.absolute_uri, headers=headers, proxies=pxy)
     data = r.content
     if segment.key is not None and segment.key.absolute_uri is not None:
         key = keys[segment.key.absolute_uri]
@@ -31,7 +34,7 @@ headers = {
 keys = {}
 for key in playlist.keys:
     if key is not None and key.absolute_uri is not None:
-        key_content = requests.get(key.absolute_uri, headers=headers).content
+        key_content = requests.get(key.absolute_uri, headers=headers, proxies=pxy).content
         keys[key.absolute_uri] = key_content
 semathore = threading.Semaphore(8)
 total = len(playlist.segments)
