@@ -5,9 +5,9 @@ import requests
 from Crypto.Cipher import AES
 
 pxy = {
-    "http": "127.0.0.1:8087"
+    # "http": "127.0.0.1:8087"
 }
-m3u8_url = 'https://gma9ia.cdnlab.live/hls/3251L0PzYCG4lwdSR5fr9g/1613861742/12000/12222/12222.m3u8'
+m3u8_url = ''
 
 def download(txt, segment, fileName):
     r = requests.get(segment.absolute_uri, headers=headers, proxies=pxy)
@@ -15,7 +15,7 @@ def download(txt, segment, fileName):
     if segment.key is not None and segment.key.absolute_uri is not None:
         key = keys[segment.key.absolute_uri]
         iv = segment.key.iv
-        if iv.startswith('0x'):
+        if iv != None and iv.startswith('0x'):
             iv = bytearray.fromhex(iv[2:])
         cryptos = AES.new(key, AES.MODE_CBC, iv)
         data = cryptos.decrypt(data)
